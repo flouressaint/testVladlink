@@ -7,23 +7,17 @@
 
 <body>
     <?php
-    $env = parse_ini_file('local.env');
+    require_once 'Database.php';
 
-    $db = new PDO(
-        sprintf(
-            'pgsql:host=db;port=%s;dbname=%s;user=%s;password=%s',
-            $env['POSTGRES_PORT'],
-            $env['POSTGRES_DB'],
-            $env['POSTGRES_USER'],
-            $env['POSTGRES_PASSWORD']
-        )
-    );
-
-
+    $db = Database::connect();
     $statement = $db->prepare("SELECT * FROM categories");
     $statement->execute();
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-
+    if (count($result) == 0) {
+        echo "Данные категорий не найдены";
+        return;
+    }
+    write($result);
     function write(array $elements, $parentId = 0, $level = "")
     {
         foreach ($elements as $element) {
@@ -38,10 +32,7 @@
         }
     }
 
-    write($result);
     ?>
 </body>
-
-
 
 </html>
