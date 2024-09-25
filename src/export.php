@@ -13,15 +13,16 @@ class Export
         fclose($this->file);
     }
 
-    public function write(array $elements, $parentId = 0, $level = 0)
+    public function write(array $elements, $parentId = 0, $level = "", $url = "/")
     {
         foreach ($elements as $element) {
-            if ($element['parent_id'] == $parentId && $level <= 1) {
-                fwrite($this->file, str_repeat("  ", $level) . $element['name'] . "\n");
+            if ($element['parent_id'] == $parentId) {
+                fwrite($this->file, $level . $element['name'] . "  " . $url . $element['alias'] . "\n");
                 $children = $this->write(
                     $elements,
                     $element['id'],
-                    $level + 1,
+                    $level . "  ",
+                    $url . $element['alias'] . "/"
                 );
             }
         }
@@ -30,11 +31,11 @@ class Export
 }
 
 
-$env = parse_ini_file('.env');
+$env = parse_ini_file('local.env');
 
 $db = new PDO(
     sprintf(
-        'pgsql:host=localhost;port=%s;dbname=%s;user=%s;password=%s',
+        'pgsql:host=db;port=%s;dbname=%s;user=%s;password=%s',
         $env['POSTGRES_PORT'],
         $env['POSTGRES_DB'],
         $env['POSTGRES_USER'],
@@ -47,5 +48,5 @@ $statement = $db->prepare("SELECT * FROM categories");
 $statement->execute();
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-$export = new Export('type_b.txt');
+$export = new Export('type_a.txt');
 $export->write($result);

@@ -1,6 +1,29 @@
 <?php
 
 
+class Database
+{
+    public function __construct($port, $dbname, $user, $password)
+    {
+        $this->db = new PDO(
+            sprintf(
+                'pgsql:host=db;port=%s;dbname=%s;user=%s;password=%s',
+                $port,
+                $dbname,
+                $user,
+                $password
+            )
+        );
+    }
+
+
+
+    public function __destruct()
+    {
+        $this->db = null;
+    }
+}
+
 function array_values_recursive($array, $parent_id = null)
 {
     $result = array();
@@ -21,11 +44,11 @@ function array_values_recursive($array, $parent_id = null)
 }
 
 
-$env = parse_ini_file('.env');
+$env = parse_ini_file('local.env');
 
 $db = new PDO(
     sprintf(
-        'pgsql:host=localhost;port=%s;dbname=%s;user=%s;password=%s',
+        'pgsql:host=db;port=%s;dbname=%s;user=%s;password=%s',
         $env['POSTGRES_PORT'],
         $env['POSTGRES_DB'],
         $env['POSTGRES_USER'],

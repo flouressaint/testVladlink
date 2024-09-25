@@ -13,16 +13,15 @@ class Export
         fclose($this->file);
     }
 
-    public function write(array $elements, $parentId = 0, $level = "", $url = "/")
+    public function write(array $elements, $parentId = 0, $level = 0)
     {
         foreach ($elements as $element) {
-            if ($element['parent_id'] == $parentId) {
-                fwrite($this->file, $level . $element['name'] . "  " . $url . $element['alias'] . "\n");
+            if ($element['parent_id'] == $parentId && $level <= 1) {
+                fwrite($this->file, str_repeat("  ", $level) . $element['name'] . "\n");
                 $children = $this->write(
                     $elements,
                     $element['id'],
-                    $level . "  ",
-                    $url . $element['alias'] . "/"
+                    $level + 1,
                 );
             }
         }
@@ -31,7 +30,7 @@ class Export
 }
 
 
-$env = parse_ini_file('.env');
+$env = parse_ini_file('local.env');
 
 $db = new PDO(
     sprintf(
@@ -48,5 +47,5 @@ $statement = $db->prepare("SELECT * FROM categories");
 $statement->execute();
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-$export = new Export('type_a.txt');
+$export = new Export('type_b.txt');
 $export->write($result);

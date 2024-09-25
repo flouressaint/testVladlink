@@ -7,11 +7,11 @@
 
 <body>
     <?php
-    $env = parse_ini_file('./.env');
+    $env = parse_ini_file('local.env');
 
     $db = new PDO(
         sprintf(
-            'pgsql:host=localhost;port=%s;dbname=%s;user=%s;password=%s',
+            'pgsql:host=db;port=%s;dbname=%s;user=%s;password=%s',
             $env['POSTGRES_PORT'],
             $env['POSTGRES_DB'],
             $env['POSTGRES_USER'],
