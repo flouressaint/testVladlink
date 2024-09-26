@@ -6,7 +6,7 @@
 
 ## Использование
 
-Чтобы импортировать данные из categories.json в БД: 
+Чтобы импортировать данные из categories.json в БД:  
 <http://localhost/import.php>
 
 Для экспорта данных категорий с URL из БД в файл type_a.txt:  
