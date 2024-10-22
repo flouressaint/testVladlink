@@ -1,7 +1,7 @@
 # Тестовое задание Владлинк
 
 ## Развертывание проекта
-`docker-compose --env-file local.env -p testVladlink up -d`
+`docker-compose --env-file local.env -p test_vladlink up -d`
 
 
 ## Использование
